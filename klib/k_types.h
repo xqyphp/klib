@@ -11,11 +11,15 @@
 
 #include <stddef.h>
 
-typedef unsigned            k_bool_t;
-typedef int                       k_status_t;
+typedef unsigned       k_bool_t;
+typedef int            k_status_t;
 
 #define K_TRUE         1
 #define K_FALSE        0
-#define K_NULL          ((void*)0)
+#define K_NULL         ((void*)0)
+
+typedef int            (*k_compare_t)(void* left,void* right);
+typedef void*          (*k_getkey_t)(void* rbnode);
+
 
 #endif /* ktypes_h */
