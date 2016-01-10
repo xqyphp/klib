@@ -96,20 +96,20 @@ k_rbtree_insert_fixup(k_rbtree_t* t,k_rbnode_t* z)
 	       
 	  }else{
 	       y = z->parent->parent->left;
-          if(y->color == k_color_red)//case 1
-          {
-              z->parent->color = k_color_black;
-              y->color = k_color_black;
-              z->parent->parent->color = k_color_red;
-              z = z->parent->parent;
-          }else if(z == z->parent->left){//case 2
-              z = z->parent;
-              right_rotate(t,z);
-          }else if(z == z->parent->right){//case 3
-              z->parent->color = k_color_black;
-              z->parent->parent->color = k_color_red;
-              left_rotate(t,z->parent->parent);
-          }
+	       if(y->color == k_color_red)//case 1
+		 {
+		   z->parent->color = k_color_black;
+		   y->color = k_color_black;
+		   z->parent->parent->color = k_color_red;
+		   z = z->parent->parent;
+		 }else if(z == z->parent->left){//case 2
+		 z = z->parent;
+		 right_rotate(t,z);
+	       }else if(z == z->parent->right){//case 3
+		 z->parent->color = k_color_black;
+		 z->parent->parent->color = k_color_red;
+		 left_rotate(t,z->parent->parent);
+	       }
 
 	  }
      }
