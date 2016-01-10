@@ -20,7 +20,8 @@
 #define DEF_RBTREE_TYPE(node_type) \
   k_compare_t  compare;\
   k_getkey_t   getkey;\
-  node_type*   header;\
+  node_type*   nil_node;\
+  node_type*   root;\
   node_type*   left;\
   node_type*   right
 
@@ -30,7 +31,7 @@ enum k_color_type_t{
 };
 
 typedef struct  k_rbnode_s{
-  DEF_RBTREE_TYPE(struct k_rbnode_s);
+  DEF_RBNODE_TYPE(struct k_rbnode_s);
 }k_rbnode_t;
 
 typedef struct  k_rbtree_s{
