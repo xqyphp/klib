@@ -85,30 +85,35 @@ k_rbtree_insert_fixup(k_rbtree_t* t,k_rbnode_t* z)
 		    y->color = k_color_black;
 		    z->parent->parent->color = k_color_red;
 		    z = z->parent->parent;
-	       }else if(z == z->parent->right){//case 2
-		    z = z->parent;
-		    left_rotate(t,z);    
-	       }else if(z == z->parent->left){//case 3
-		    z->parent->color = k_color_black;
+	       }else{
+		    if(z == z->parent->right){//case 2
+			 z = z->parent;
+			 left_rotate(t,z);
+		    }
+		    //case 2 will turn to case 3
+		    z->parent->color = k_color_black;//case 3
 		    z->parent->parent->color = k_color_red;
 		    right_rotate(t,z->parent->parent);
+		    
 	       }
 	       
 	  }else{
 	       y = z->parent->parent->left;
 	       if(y->color == k_color_red)//case 1
-		 {
-		   z->parent->color = k_color_black;
-		   y->color = k_color_black;
-		   z->parent->parent->color = k_color_red;
-		   z = z->parent->parent;
-		 }else if(z == z->parent->left){//case 2
-		 z = z->parent;
-		 right_rotate(t,z);
-	       }else if(z == z->parent->right){//case 3
-		 z->parent->color = k_color_black;
-		 z->parent->parent->color = k_color_red;
-		 left_rotate(t,z->parent->parent);
+	       {
+		    z->parent->color = k_color_black;
+		    y->color = k_color_black;
+		    z->parent->parent->color = k_color_red;
+		    z = z->parent->parent;
+	       }else{
+		    if(z == z->parent->left){//case 2
+			 z = z->parent;
+			 right_rotate(t,z);
+		    }
+		    
+		    z->parent->color = k_color_black;//case 3
+		    z->parent->parent->color = k_color_red;
+		    left_rotate(t,z->parent->parent);
 	       }
 
 	  }
