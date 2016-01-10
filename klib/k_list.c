@@ -35,3 +35,11 @@ k_list_insert_after(k_list_t* pos,k_list_t* val)
 {
      k_list_insert_before(pos->next,val);
 }
+
+k_list_t*
+k_list_remove(k_list_t* pos)
+{
+     k_list_link(pos->prev,pos->next);
+     return pos;
+}
+

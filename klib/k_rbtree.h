@@ -12,7 +12,7 @@
 #include "k_types.h"
 
 #define DEF_RBNODE_TYPE(node_type) \
-  k_color_type_t color;\
+  enum k_color_type_t color;\
   node_type* parent;   \
   node_type* left;     \
   node_type* right
@@ -39,7 +39,7 @@ typedef struct  k_rbtree_s{
 }k_rbtree_t;
 
 void
-k_rbtree_init(k_rbtree_t* rbtree,k_compare_t compare);
+k_rbtree_init(k_rbtree_t* rbtree,k_compare_t compare,k_getkey_t getkey);
 
 void
 k_rbtree_insert(k_rbtree_t* rbtree,k_rbnode_t* rbnode);

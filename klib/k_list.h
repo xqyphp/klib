@@ -31,7 +31,7 @@ k_list_insert_before(k_list_t* pos,k_list_t* val);
 void
 k_list_insert_after(k_list_t* pos,k_list_t* val);
 
-void
+k_list_t*
 k_list_remove(k_list_t* pos);
 
 #endif /* k_list_h */
