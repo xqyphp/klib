@@ -24,5 +24,10 @@ typedef unsigned int   k_size_t;
 typedef int            (*k_compare_t)(void* left,void* right);
 typedef void*          (*k_getkey_t)(void* rbnode);
 
+#ifndef errno_t
+typedef int            k_errno_t;
+#else
+typedef errno_t        k_errno_t;
+#endif
 
 #endif /* ktypes_h */

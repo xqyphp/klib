@@ -3,14 +3,21 @@
 
 #include "k_types.h"
 
+#include <errno.h>
+#include <stdio.h>
+
 #ifdef linux
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include<unistd.h>
 
 typedef int                  k_socket_t;
+typedef socklen_t            k_socklen_t;
+
 
 #else
 
@@ -18,6 +25,7 @@ typedef int                  k_socket_t;
 #pragma comment(lib, "ws2_32.lib")
 
 typedef SOCKET               k_socket_t;
+typedef int                  k_socklen_t;
 
 #endif
 
@@ -30,7 +38,7 @@ k_socket_init();
 k_status_t
 k_sockt_destory();
 
-errno_t
+k_errno_t
 k_socket_errno();
 
 k_socket_t
@@ -46,13 +54,13 @@ k_status_t
 k_listen(k_socket_t sock_fd, int backlog);
 
 k_status_t
-k_accept(k_socket_t sock_fd, k_sockaddr_t* addr, int addrlen);
+k_accept(k_socket_t sock_fd, k_sockaddr_t* addr, k_socklen_t* addrlen);
 
 k_size_t
-k_send(k_socket_t fd, const void *buf, size_t nbyte);
+k_send(k_socket_t fd, const void *buf, size_t nbyte, int flags);
 
 k_size_t
-k_recv(k_socket_t fd,  void *buf, size_t nbytes);
+k_recv(k_socket_t fd,  void *buf, size_t nbytes, int flags);
 
 k_status_t 
 k_close(k_socket_t sock_fd);

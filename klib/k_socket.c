@@ -2,12 +2,12 @@
 #include "k_types.h"
 
 
-
 k_status_t
 k_socket_init()
 {
 #ifdef linux
 	//noting to do
+	return K_SUCCESS;
 #else
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -30,7 +30,7 @@ k_sockt_destory()
 	return K_SUCCESS;
 }
 
-errno_t
+k_errno_t
 k_socket_errno()
 {
 #ifdef linux
@@ -71,41 +71,28 @@ k_listen(k_socket_t sock_fd, int backlog)
 }
 
 k_status_t
-k_accept(k_socket_t sock_fd, k_sockaddr_t* addr, int addrlen)
+k_accept(k_socket_t sock_fd, k_sockaddr_t* addr, k_socklen_t* addrlen)
 {
-#ifdef linux
 	return accept(sock_fd, addr, addrlen);
-#else
-	return accept(sock_fd, addr, &addrlen);
-#endif
-
 }
 
 k_size_t
-k_send(k_socket_t fd, const void *buf, size_t nbytes)
+k_send(k_socket_t fd, const void *buf, size_t nbytes, int flags)
 {
-#ifdef linux
-	return write(fd, buf, nbytes);
-#else
-	return send(fd, buf, nbytes, 0);
-#endif
+	return send(fd, buf, nbytes, flags);
 }
 
 k_size_t
-k_recv(k_socket_t fd, void *buf, size_t nbytes)
+k_recv(k_socket_t fd, void *buf, size_t nbytes, int flags)
 {
-#ifdef linux
-	return read(fd, buf, nbytes);
-#else
-	return recv(fd, buf, nbytes,0);
-#endif
+	return recv(fd, buf, nbytes,flags);
 }
 
 k_status_t
 k_close(k_socket_t sock_fd)
 {
 #ifdef linux
-	return colse(sock_fd);
+	return close(sock_fd);
 #else
 	return closesocket(sock_fd);
 #endif
