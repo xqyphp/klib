@@ -8,6 +8,7 @@
 
 #include "k_rbtree.h"
 
+
 static void
 left_rotate(k_rbtree_t* t,k_rbnode_t* x)
 {
@@ -17,7 +18,7 @@ left_rotate(k_rbtree_t* t,k_rbnode_t* x)
     {
         y->left->parent = x;
     }
-    
+
     y->parent = x->parent;
     if(x->parent == t->nil_node)
     {
@@ -28,7 +29,7 @@ left_rotate(k_rbtree_t* t,k_rbnode_t* x)
     }else if(x->parent->right == x){
         x->parent->right = y;
     }
-    
+
     y->left = x;
     x->parent = y;
 }
@@ -37,13 +38,13 @@ static void
 right_rotate(k_rbtree_t* t,k_rbnode_t* y)
 {
     k_rbnode_t* x = y->left;
-    
+
     y->left = x->right;//put x's right node to y's left node
     if(x->right != t->nil_node)
     {
 	x->right->parent = y;
     }
-    
+
     x->parent = y->parent;//link y->parent to x
     if(x->parent == t->nil_node)
     {
@@ -53,7 +54,7 @@ right_rotate(k_rbtree_t* t,k_rbnode_t* y)
     }else if(y->parent->right == y){
         y->parent->right = x;
     }
-    
+
     x->right = y;//put y to x's right
     y->parent = x;
 }
@@ -94,9 +95,9 @@ k_rbtree_insert_fixup(k_rbtree_t* t,k_rbnode_t* z)
 		    z->parent->color = k_color_black;//case 3
 		    z->parent->parent->color = k_color_red;
 		    right_rotate(t,z->parent->parent);
-		    
+
 	       }
-	       
+
 	  }else{
 	       y = z->parent->parent->left;
 	       if(y->color == k_color_red)//case 1
@@ -110,7 +111,7 @@ k_rbtree_insert_fixup(k_rbtree_t* t,k_rbnode_t* z)
 			 z = z->parent;
 			 right_rotate(t,z);
 		    }
-		    
+
 		    z->parent->color = k_color_black;//case 3
 		    z->parent->parent->color = k_color_red;
 		    left_rotate(t,z->parent->parent);
@@ -151,4 +152,34 @@ k_rbtree_insert(k_rbtree_t* t,k_rbnode_t* z)
      z->right = t->nil_node;
      z->color = k_color_red;
      k_rbtree_insert_fixup(t,z);
+}
+
+static void
+rb_transplant(k_rbtree_t* t,k_rbnode_t* u,k_rbnode_t* v)
+{
+        if(u->parent == t->nil_node){
+                t->root = v;
+        }else if(u == u->parent->left){
+                u->parent->left = v;
+        }else{
+                u->parent->right = v;
+        }
+        u->parent = u->parent;
+
+}
+
+void
+k_rbtree_delete(k_rbtree_t* t,k_rbnode_t* z)
+{
+        k_rbnode_t* y = z;
+        //todo
+
+        if(z->left == t->nil_node){
+                x = z->right;
+                rb_transplant(t,z,z->right);
+        }else if(z->right == t->nil_node){
+                x = z->left;
+                rb_transplant(t,z,z->left);
+        }
+
 }
