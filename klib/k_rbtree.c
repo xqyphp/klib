@@ -168,18 +168,80 @@ rb_transplant(k_rbtree_t* t,k_rbnode_t* u,k_rbnode_t* v)
 
 }
 
+static k_rbnode_t*
+rb_minimum(k_rbtree_t* t,k_rbnode_t* z)
+{
+        k_rbnode_t* y = t->nil_node;
+
+        while(z != t->nil_node){
+                y = z;
+                z = z->left;
+        }
+        return y;
+
+}
+
+static void
+k_rbtree_delete_fixup(k_rbtree_t* t,k_rbnode_t* x)
+{
+        k_rbnode_t* w;// w is x's brother
+        while( (x != t->root)&& (x->color == k_color_black) ){
+
+                if(x == x->parent->left){
+                        w = x->parent->right;
+
+                        if(w->color == k_color_red){
+
+                        }
+
+                }else{
+                        //todo
+                }
+
+        }
+
+}
+
 void
 k_rbtree_delete(k_rbtree_t* t,k_rbnode_t* z)
 {
+        /*  y's postion is the really to be delete,
+         *   move y to z's position  and move x to y's postion
+         */
         k_rbnode_t* y = z;
-        //todo
+        k_rbnode_t* x = t->nil_node;
 
-        if(z->left == t->nil_node){
+        enum k_color_type_t y_old_color = y->color;
+
+        if(z->left == t->nil_node){//if one of z's child is nil move the other child to z;
                 x = z->right;
                 rb_transplant(t,z,z->right);
         }else if(z->right == t->nil_node){
                 x = z->left;
                 rb_transplant(t,z,z->left);
+        }else{// y to be z's successor
+                y = rb_minimum(t,z->right);
+                y_old_color = y->color;
+                x = y->right;
+
+                //since y has no left child then move y's right to be y
+                if(y->parent == z){//move x to y's postion
+                        x->parent = z;
+                }else{
+                        rb_transplant(t,y,x);
+                        y->right = z->right;
+                        y->right->parent = y;
+                }
+                // move y to z's postion
+                rb_transplant(t,z,y);
+                y->left = z->left;
+                y->left->parent = y;
+                y->color = z->color;
+
+        }
+
+        if(y_old_color == k_color_black){
+                k_rbtree_delete_fixup(t,x);
         }
 
 }
