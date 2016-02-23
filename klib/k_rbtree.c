@@ -189,17 +189,32 @@ k_rbtree_delete_fixup(k_rbtree_t* t,k_rbnode_t* x)
 
                 if(x == x->parent->left){
                         w = x->parent->right;
-
                         if(w->color == k_color_red){
-
+                            w ->color = k_color_black;
+                            x->parent->color = k_color_red;
+                            left_rotate(t, x->parent);
+                            w = x->parent->left;
                         }
-
+                        if(w->left->color == k_color_black &&
+                           w->right->color == k_color_black){
+                            w->color = k_color_red;
+                            x = x->parent;
+                        }else if (w->right->color == k_color_black){
+                            w->left->color = k_color_black;
+                            w->color = k_color_red;
+                            right_rotate(t, w);
+                            w = x->parent->right;
+                        }
+                    w->color = x->parent->color;
+                    w->parent->color = k_color_black;
+                    left_rotate(t, x->parent);
+                    x = t->root;
                 }else{
                         //todo
                 }
 
         }
-
+    x->color = k_color_black;
 }
 
 void
