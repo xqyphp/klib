@@ -10,6 +10,7 @@
 #define ktypes_h
 
 #include <stddef.h>
+#include "k_cstd.h"
 
 typedef unsigned       k_bool_t;
 typedef int            k_status_t;
@@ -23,6 +24,9 @@ typedef unsigned int   k_size_t;
 
 typedef int            (*k_compare_t)(void* left,void* right);
 typedef void*          (*k_getkey_t)(void* rbnode);
+
+#define LOG(...) 
+//#define LOG(...) printf(__VA_ARGS__)
 
 #ifndef errno_t
 typedef int            k_errno_t;
