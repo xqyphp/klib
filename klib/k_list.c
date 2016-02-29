@@ -22,6 +22,49 @@ k_list_link(k_list_t* prev, k_list_t* next)
      next->prev = prev;
 }
 
+size_t
+k_list_get_size(k_list_t* list_val)
+{
+	int count = 1;
+	k_list_t* list_next = list_val;
+	while (list_next->next != list_val)
+	{
+		++count;
+		list_next = list_next->next;
+	}
+	return count;
+}
+
+size_t
+k_list_get_valid_size(k_list_t* list_val)
+{
+	return k_list_get_size(list_val) - 1;
+}
+
+k_list_t*
+k_list_get_first(k_list_t* list_header)
+{
+	return list_header->next;
+}
+
+k_list_t*
+k_list_get_last(k_list_t* list_header)
+{
+	return list_header->prev;
+}
+
+k_list_t*
+k_list_get_prev(k_list_t* list_val) 
+{
+	return list_val->prev;
+}
+
+k_list_t*
+k_list_get_next(k_list_t* list_val)
+{
+	return list_val->next;
+}
+
 void
 k_list_insert_before(k_list_t* pos,k_list_t* val)
 {
