@@ -7,17 +7,22 @@
 #include <memory.h>
 #include <string.h>
 
-static int pool_block_get_free(block_t* block)
+static char* pool_block_get_data_ptr(block_t* block)
 {
-	int used = block->cur_pos - ((char*)block + sizeof(block_t));
-	return block->mem_size - used;
+	return (char*)block + sizeof(block_t);
 }
 
-static void pool_add_block(k_mpool_t* pool, block_t* block, int block_size)
+static int pool_block_get_free(block_t* block)
 {
-	LOG("add block->index = %d , size = %d\n", block->debug_index, block_size);
-	block->mem_size = block_size;
-	block->cur_pos = ((char*)block) + sizeof(block_t);
+	int used = block->cur_pos - pool_block_get_data_ptr(block);
+	return block->data_size - used;
+}
+
+static void pool_add_block(k_mpool_t* pool, block_t* block, int data_size)
+{
+	LOG("add block->index = %d , size = %d\n", block->debug_index, data_size);
+	block->data_size = data_size;
+	block->cur_pos = pool_block_get_data_ptr(block);
 	k_list_insert_after((k_list_t*)&(pool->blocks), (k_list_t*)block);
 }
 
@@ -29,7 +34,7 @@ static block_t* pool_find_block(k_mpool_t* pool, int rq_size)
 		block_t* block_next = (block_t*)block->next;
 		int mem_free = pool_block_get_free(block);
 		if (mem_free >= rq_size) {
-			LOG("pool_find_block->index = %d , size = %d,free=%d\n", block->debug_index, block->mem_size, mem_free);
+			LOG("pool_find_block->index = %d , size = %d,free=%d\n", block->debug_index, block->data_size, mem_free);
 			return block;
 		}
 		block = block_next;
@@ -45,7 +50,7 @@ static block_t* pool_new_block(k_mpool_t* pool, int block_size)
 	block->debug_index = pool->block_count++;
 	pool_add_block(pool, block, block_size);
 
-	LOG("pool_new_block->index = %d , size = %d.\n", block->debug_index, block->mem_size);
+	LOG("pool_new_block->index = %d , size = %d.\n", block->debug_index, block->data_size);
 
 	return block;
 }
@@ -55,7 +60,7 @@ k_mpool_t* k_mpool_create(const char* name, int init_size, int increase)
 	LOG("pool_create -> %s,size=%d,increase=%d.\n", name, init_size, increase);
 	k_mpool_t* pool = (k_mpool_t*)k_malloc(sizeof(k_mpool_t));
 	assert(strlen(name) < POOL_NAME_LEN);
-	strcpy(pool->pool_name, name);
+	strcpy(pool->pool_name,name);
 	pool->init_size = init_size;
 	pool->cur_size = init_size;
 	pool->increase_size = increase;
@@ -97,7 +102,22 @@ void*   k_mpool_malloc_fast(k_mpool_t* pool, int rq_size)
 	return ptr_mem;
 }
 
-int     k_mpool_destory(k_mpool_t* pool)
+k_status_t		k_mpool_reuse(k_mpool_t* pool)
+{
+	LOG("reuse pool -> %s\n", pool->pool_name);
+	block_t* block = (block_t*)pool->blocks.next;
+	while ((void*)block != &(pool->blocks)) {
+		block_t* block_next = (block_t*)block->next;
+		LOG("reuse_block -> index =%d.\n", block->debug_index);
+		block->cur_pos = pool_block_get_data_ptr(block);
+		block = block_next;
+	}
+	LOG("free_pool -> %s.\n", pool->pool_name);
+	k_free(pool);
+	return K_SUCCESS;
+}
+
+k_status_t		k_mpool_destory(k_mpool_t* pool)
 {
 	LOG("destory pool -> %s\n", pool->pool_name);
 	block_t* block = (block_t*)pool->blocks.next;
@@ -109,5 +129,5 @@ int     k_mpool_destory(k_mpool_t* pool)
 	}
 	LOG("free_pool -> %s.\n", pool->pool_name);
 	k_free(pool);
-	return 1;
+	return K_SUCCESS;
 }

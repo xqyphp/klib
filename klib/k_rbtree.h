@@ -1,11 +1,3 @@
-//
-//  rbtree.h
-//  klib
-//
-//  Created by LiKai on 16/1/9.
-//  Copyright © 2016年 LiKai. All rights reserved.
-//
-
 #ifndef k_rbtree_h
 #define k_rbtree_h
 

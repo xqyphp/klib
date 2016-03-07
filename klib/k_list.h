@@ -1,10 +1,4 @@
-//
-//  list.h
-//  klib
-//
-//  Created by LiKai on 16/1/8.
-//  Copyright © 2016年 LiKai. All rights reserved.
-//
+
 
 #ifndef k_list_h
 #define k_list_h
@@ -27,10 +21,10 @@ k_list_link(k_list_t* prev, k_list_t* next);
 
 //return all the list element, if you want data not include header,
 //then you can call k_list_get_valid_size.
-size_t
+k_size_t
 k_list_get_size(k_list_t* list_val);
 
-size_t
+k_size_t
 k_list_get_valid_size(k_list_t* list_val);
 
 

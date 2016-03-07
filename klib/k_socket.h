@@ -57,10 +57,10 @@ k_status_t
 k_accept(k_socket_t sock_fd, k_sockaddr_t* addr, k_socklen_t* addrlen);
 
 k_size_t
-k_send(k_socket_t fd, const void *buf, size_t nbyte, int flags);
+k_send(k_socket_t fd, const void *buf, k_size_t nbyte, int flags);
 
 k_size_t
-k_recv(k_socket_t fd,  void *buf, size_t nbytes, int flags);
+k_recv(k_socket_t fd,  void *buf, k_size_t nbytes, int flags);
 
 k_status_t 
 k_close(k_socket_t sock_fd);
