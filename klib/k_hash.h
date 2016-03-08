@@ -26,21 +26,47 @@
 #ifndef k_hash_h
 #define k_hash_h
 
-typedef struct k_hash_entry_s
+#include "k_types.h"
+#include "k_list.h"
+#include "k_mpool.h"
+
+typedef struct k_hash_entry_s 
 {
-	void* key;
-	void* val;
+	DEF_LIST_HEAD(struct k_hash_entry_s);
+	struct k_hash_bucket_s* parent;
 }k_hash_entry_t;
+
+typedef struct k_hash_bucket_s
+{
+	DEF_LIST_HEAD(struct k_hash_bucket_s);
+	k_hash_entry_t hash_entries;
+	k_size_t hash_code;
+}k_hash_bucket_t;
 
 typedef struct k_hash_table_s
 {
-	k_hash_entry_t* entries;
-	int size;
-	void* key;
-	void* val;
+	k_hash_bucket_t** buckets;
+	k_hash_bucket_t values;
+	k_size_t buckets_count;
+	k_gethash_t gethash;
+	k_getkey_t  getkey;
+	k_compare_t compare;
+	k_mpool_t* pool;
 }k_hash_table_t;
 
-int k_hash_value(const char* str_val);
+k_size_t k_get_hash_str(const char* str_val);
+k_size_t k_get_hash_int(const int*  int_val);
 
+k_status_t k_hash_init(k_hash_table_t* hash_table,k_mpool_t* pool,
+	k_size_t hash_arr_size,k_getkey_t fn_getkey,
+	k_gethash_t fn_gethash, k_compare_t fn_compare);
+
+k_status_t k_hash_destroy(k_hash_table_t* hash_table);
+
+k_status_t k_hash_add(k_hash_table_t* hash_table, k_hash_entry_t* val);
+
+k_hash_entry_t* k_hash_get(k_hash_table_t* hash_table, void* key);
+
+k_hash_entry_t* k_hash_remove(k_hash_table_t* hash_table, void* key);
 
 #endif

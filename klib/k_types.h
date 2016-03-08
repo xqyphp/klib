@@ -21,7 +21,8 @@ typedef enum k_status_enum {
 #define K_NULL         ((void*)0)
 
 typedef int            (*k_compare_t)(void* left,void* right);
-typedef void*          (*k_getkey_t)(void* rbnode);
+typedef void*          (*k_getkey_t)(void* val);
+typedef int			   (*k_gethash_t)(void* hash_key);
 
 #define LOG(...) 
 //#define LOG(...) printf(__VA_ARGS__)
